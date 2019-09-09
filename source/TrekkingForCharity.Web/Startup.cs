@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TrekkingForCharity.Web.Infrastructure.MediatrConfiguration;
@@ -17,7 +21,8 @@ namespace TrekkingForCharity.Web
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", true, true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+                .AddJsonFile($"appsettings.local.json", true);
 
             builder.AddEnvironmentVariables();
 
@@ -32,6 +37,7 @@ namespace TrekkingForCharity.Web
             services
                 .AddConfigurationRoot()
                 .AddDataStores(this.Configuration)
+                .AddCustomizedAuthentication(this.Configuration)
                 .AddCustomizedMvc();
 
             var container = new ContainerBuilder();
@@ -50,6 +56,7 @@ namespace TrekkingForCharity.Web
                 .AddCustomizedErrorResponse(env)
                 .UseStaticFiles()
                 .UseStackify(env)
+                .UseAuthentication()
                 .UseMvcWithDefaultRoute();
         }
     }
