@@ -2,7 +2,7 @@
 #tool "nuget:?package=GitVersion.CommandLine"
 #tool "nuget:?package=OctopusTools&version=4.15.5"
 #tool "nuget:?package=xunit.runner.console&version=2.2.0"
-#tool "nuget:?package=JetBrains.dotCover.CommandLineTools&version=2018.1.4"
+#addin nuget:?package=Cake.Coverlet
 
 var target = Argument<string>("target", "Default");
 GitVersion gitversion;
@@ -25,7 +25,7 @@ Task("__Clean")
 
         CreateDirectory(releasePath);
         CreateDirectory(publishPath);
-        CreateDirectory(coverPath);   
+        CreateDirectory(coverPath);
     });
 
 Task("__Versioning")
@@ -59,17 +59,21 @@ Task("__Build")
     });
 Task("__Test")
     .Does(() => {
-        DotCoverCover(tool => {
-            tool.DotNetCoreTest("../TrekkingForCharity.sln", new DotNetCoreTestSettings {
-                Configuration = "Release" ,
-        NoBuild = true,
-        Logger = "console;verbosity=normal"   
-            });
-        },
-        coverPath + File("result.dcvr"),
-        new DotCoverCoverSettings()            
-        );
-        TeamCity.ImportDotCoverCoverage(MakeAbsolute(coverPath + File("result.dcvr")), "./");
+        var path = MakeAbsolute(coverPath + File("results.xunit.xml"));
+        var testSettings = new DotNetCoreTestSettings {
+            Configuration = "Release" ,
+            NoBuild = true,
+            Logger = $"xunit;LogFilePath={path}"
+        };
+
+        var coverletSettings = new CoverletSettings {
+            CollectCoverage = true,
+            CoverletOutputFormat = (CoverletOutputFormat)8,
+            CoverletOutputDirectory = coverPath,
+            CoverletOutputName = "results"
+        };
+
+        DotNetCoreTest(File("../Tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj"), testSettings, coverletSettings);
     });
 Task("__Publish")
     .Does(() => {
@@ -91,6 +95,7 @@ Task("Build")
     .IsDependentOn("__Versioning")
     .IsDependentOn("__RestorePackages")
     .IsDependentOn("__Build")
+    .IsDependentOn("__Test")
     .IsDependentOn("__Publish")
     .IsDependentOn("__Package")
     ;

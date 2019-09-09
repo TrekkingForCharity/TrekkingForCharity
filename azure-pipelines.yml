@@ -1,0 +1,36 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.15.1'
+  displayName: 'Install Node.js'
+
+- task: SonarCloudPrepare@1
+  inputs:
+    SonarCloud: 'TrekkingForCharity'
+    organization: 'trekking-for-charity'
+    scannerMode: 'MSBuild'
+    projectKey: 'TrekkingForCharity'
+
+- task: Cake@0
+  inputs:
+    script: 'Build/build.cake'
+    target: 'Default'
+    verbosity: 'Verbose'
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results coverage/xunit-report.xml'
+  inputs:
+    testResultsFormat: XUnit
+    testResultsFiles: 'build/build-artifacts/cover/results.xunit.xml'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'build/build-artifacts/cover/results.cobertura.xml'
+- task: SonarCloudAnalyze@1
+- task: SonarCloudPublish@1
+  inputs:
+    pollingTimeoutSec: '300'
