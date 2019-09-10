@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <ProjectGuid>{c5cf9d5d-474a-491f-97d4-6c6afd347a50}</ProjectGuid>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
