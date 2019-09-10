@@ -68,7 +68,7 @@ Task("__Test")
 
         var coverletSettings = new CoverletSettings {
             CollectCoverage = true,
-            CoverletOutputFormat = (CoverletOutputFormat)8,
+            CoverletOutputFormat = (CoverletOutputFormat)12,
             CoverletOutputDirectory = coverPath,
             CoverletOutputName = "results"
         };
