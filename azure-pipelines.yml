@@ -14,7 +14,7 @@ steps:
     scannerMode: 'MSBuild'
     projectKey: 'TrekkingForCharity'
     extraProperties: |
-     sonar.cs.opencover.reportsPaths=build/build-artifacts/cover/results.opencover.xml
+     sonar.cs.opencover.reportsPaths=**/results.opencover.xml
 
 - task: Cake@0
   inputs:
