@@ -20,10 +20,12 @@ steps:
   inputs:
     filePath: './build/build.sh'
     arguments: '--bootstrap'
+    workingDirectory: './build'
 
 - task: Bash@3
   inputs:
     filePath: './build/build.sh'
+    workingDirectory: './build'
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
