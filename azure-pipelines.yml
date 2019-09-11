@@ -2,10 +2,15 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
+- task: UseDotNet@2
   inputs:
-    versionSpec: '12.7.0'
-  displayName: 'Install Node.js'
+    packageType: 'sdk'
+    version: '2.2.402'
+
+- task: UseNode@1
+  inputs:
+    version: '12.7.0'
+
 
 - task: SonarCloudPrepare@1
   inputs:
@@ -21,29 +26,28 @@ steps:
     command: 'install'
     workingDir: './source/TrekkingForCharity.Web'
 
-- task: Bash@3
+- task: DotNetCoreCLI@2
   inputs:
-    filePath: './build/build.sh'
-    arguments: '--bootstrap'
-    workingDirectory: './build'
+    command: 'restore'
+    projects: './TrekkingForCharity.sln'
 
-- task: Bash@3
+- task: DotNetCoreCLI@2
   inputs:
-    filePath: './build/build.sh'
-    arguments: '--verbosity=diagnostic'
-    workingDirectory: './build'
+    command: 'build'
+    projects: './TrekkingForCharity.sln'
 
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results coverage/xunit-report.xml'
+- task: Npm@1
   inputs:
-    testResultsFormat: XUnit
-    testResultsFiles: 'build/build-artifacts/cover/results.xunit.xml'
+    command: 'custom'
+    workingDir: './source/TrekkingForCharity.Web'
+    customCommand: 'run release:build'
 
-- task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
+- task: DotNetCoreCLI@2
   inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: 'build/build-artifacts/cover/results.cobertura.xml'
+    command: 'test'
+    projects: '../Tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
+    arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release --no-build /property:CollectCoverage=True /property:CoverletOutputFormat="opencover,cobertura" /property:CoverletOutput="./"'
+
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
   inputs:
