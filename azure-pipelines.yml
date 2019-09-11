@@ -16,6 +16,11 @@ steps:
     extraProperties: |
      sonar.cs.opencover.reportsPaths=**/results.opencover.xml
 
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: './source/TrekkingForCharity.Web'
+
 - task: Bash@3
   inputs:
     filePath: './build/build.sh'
