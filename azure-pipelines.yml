@@ -25,7 +25,7 @@ steps:
 - task: Bash@3
   inputs:
     filePath: './build/build.sh'
-    arguments: '-verbosity Diagnostic'
+    arguments: '--verbosity=diagnostic'
     workingDirectory: './build'
 
 - task: PublishTestResults@2
