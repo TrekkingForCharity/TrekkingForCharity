@@ -41,8 +41,7 @@ Task("__RestorePackages")
     .Does(() => {
         var npmInstallSettings = new NpmInstallSettings();
         npmInstallSettings.FromPath("../Source/TrekkingForCharity.Web");
-		npmInstallSettings.WithLogLevel(NpmLogLevel.Silent);
-        NpmInstall(npmInstallSettings);
+		NpmInstall(npmInstallSettings);
     });
 
 Task("__Build")
