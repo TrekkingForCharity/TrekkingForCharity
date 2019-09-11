@@ -39,19 +39,20 @@ Task("__Versioning")
 
 Task("__RestorePackages")
     .Does(() => {
-        var npmInstallSettings = new NpmInstallSettings();
-        npmInstallSettings.FromPath("../Source/TrekkingForCharity.Web");
+        var npmInstallSettings = new NpmInstallSettings{
+            WorkingDirectory = Directory("../Source/TrekkingForCharity.Web")
+        };
+        
 		NpmInstall(npmInstallSettings);
     });
 
 Task("__Build")
     .Does(() => {
         var npmRunScriptSettings = new NpmRunScriptSettings{
-           ScriptName = "release:build"
+           ScriptName = "release:build",
+           WorkingDirectory = Directory("../Source/TrekkingForCharity.Web")
         };
-		npmRunScriptSettings.WithLogLevel(NpmLogLevel.Silent);
-        npmRunScriptSettings.FromPath("../Source/TrekkingForCharity.Web");
-        NpmRunScript(npmRunScriptSettings);  
+		NpmRunScript(npmRunScriptSettings);  
 
         var settings = new DotNetCoreBuildSettings {
             Configuration = "Release"
