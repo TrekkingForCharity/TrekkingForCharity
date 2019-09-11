@@ -24,8 +24,6 @@ namespace TrekkingForCharity.Web
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
 
-            
-
             this.Configuration = builder.Build();
         }
 

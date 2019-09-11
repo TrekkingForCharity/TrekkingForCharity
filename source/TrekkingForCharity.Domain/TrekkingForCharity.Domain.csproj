@@ -1,17 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectGuid>{10878abb-b39c-478b-bee9-72bc10450a3a}</ProjectGuid>
   </PropertyGroup>
-
-<ItemGroup>
-    <Compile Include="..\..\shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\shared\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 
 
   <ItemGroup>
@@ -27,4 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TrekkingForCharity.Core\TrekkingForCharity.Core.csproj" />
   </ItemGroup>
+
+
+  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />
 </Project>
