@@ -45,7 +45,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
-    projects: '../Tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
+    projects: '../tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
     arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release --no-build /property:CollectCoverage=True /property:CoverletOutputFormat="opencover,cobertura" /property:CoverletOutput="./"'
 
 - task: SonarCloudAnalyze@1
