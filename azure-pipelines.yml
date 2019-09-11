@@ -17,12 +17,13 @@ steps:
      sonar.cs.opencover.reportsPaths=**/results.opencover.xml
 
 - task: Bash@3
-      inputs:
-        filePath: './build/build.sh'
-        arguments: '--bootstrap'
+  inputs:
+    filePath: './build/build.sh'
+    arguments: '--bootstrap'
+
 - task: Bash@3
-      inputs:
-        filePath: './build/build.sh'
+  inputs:
+    filePath: './build/build.sh'
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
