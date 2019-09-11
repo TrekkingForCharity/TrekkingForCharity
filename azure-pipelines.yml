@@ -16,11 +16,13 @@ steps:
     extraProperties: |
      sonar.cs.opencover.reportsPaths=**/results.opencover.xml
 
-- task: Cake@0
+- task: Bash@3
   inputs:
-    script: 'Build/build.cake'
-    target: 'Default'
-    verbosity: 'Verbose'
+    targetType: 'inline'
+    script: |
+      ./build/build.sh --bootstrap
+      ./build/build.sh
+      
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
