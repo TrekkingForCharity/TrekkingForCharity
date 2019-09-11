@@ -22,11 +22,11 @@ namespace TrekkingForCharity.Web.Infrastructure.ServiceConfiguration
                 .AddOpenIdConnect("Auth0", options =>
                 {
                     // Set the authority to your Auth0 domain
-                    options.Authority = $"https://{configuration["Auth0:Domain"]}";
+                    options.Authority = $"https://{configuration["Auth0_Domain"]}";
 
                     // Configure the Auth0 Client ID and Client Secret
-                    options.ClientId = configuration["Auth0:ClientId"];
-                    options.ClientSecret = configuration["Auth0:ClientSecret"];
+                    options.ClientId = configuration["Auth0_ClientId"];
+                    options.ClientSecret = configuration["Auth0_ClientSecret"];
 
                     // Set response type to code
                     options.ResponseType = "code";
@@ -48,7 +48,7 @@ namespace TrekkingForCharity.Web.Infrastructure.ServiceConfiguration
                         OnRedirectToIdentityProviderForSignOut = context =>
                         {
                             var logoutUri =
-                                $"https://{configuration["Auth0:Domain"]}/v2/logout?client_id={configuration["Auth0:ClientId"]}";
+                                $"https://{configuration["Auth0_Domain"]}/v2/logout?client_id={configuration["Auth0_ClientId"]}";
 
                             var postLogoutUri = context.Properties.RedirectUri;
                             if (!string.IsNullOrEmpty(postLogoutUri))

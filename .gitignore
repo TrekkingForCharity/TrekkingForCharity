@@ -334,3 +334,4 @@ build/build-artifacts
 lcov.info
 _Layout.cshtml
 appsettings.local.json
+Dockerfile.env

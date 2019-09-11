@@ -22,9 +22,9 @@ namespace TrekkingForCharity.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
-                .AddJsonFile($"appsettings.local.json", true);
+                .AddEnvironmentVariables();
 
-            builder.AddEnvironmentVariables();
+            
 
             this.Configuration = builder.Build();
         }

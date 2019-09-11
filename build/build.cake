@@ -1,8 +1,11 @@
-#addin "Cake.Npm"
-#tool "nuget:?package=GitVersion.CommandLine"
+#module nuget:?package=Cake.DotNetTool.Module&version=0.3.1
+#tool dotnet:?package=GitVersion.Tool&version=5.0.1
+#addin "Cake.Npm&version=0.17.0"
+#addin "Cake.Docker&version=0.10.1"
+
 #tool "nuget:?package=OctopusTools&version=4.15.5"
 #tool "nuget:?package=xunit.runner.console&version=2.2.0"
-#addin nuget:?package=Cake.Coverlet
+#addin nuget:?package=Cake.Coverlet&version=2.3.4
 
 var target = Argument<string>("target", "Default");
 GitVersion gitversion;
@@ -31,7 +34,7 @@ Task("__Clean")
 Task("__Versioning")
     .Does(() => {
         gitversion = GitVersion();        
-        TeamCity.SetBuildNumber(gitversion.FullSemVer);
+        TFBuild.Commands.UpdateBuildNumber(gitversion.FullSemVer);
     });
 
 Task("__RestorePackages")
@@ -75,20 +78,6 @@ Task("__Test")
 
         DotNetCoreTest(File("../Tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj"), testSettings, coverletSettings);
     });
-Task("__Publish")
-    .Does(() => {
-        var pubSettings = new DotNetCorePublishSettings {
-            Configuration = "Release",
-            OutputDirectory = publishPath
-        };
-        
-        DotNetCorePublish("../source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj", pubSettings);
-
-            });
-Task("__Package")
-    .Does(() => {
-        Zip(publishPath, releasePath + File("TrekkingForCharity.Web.zip"));        
-    });
 
 Task("Build")
     .IsDependentOn("__Clean")
@@ -96,8 +85,6 @@ Task("Build")
     .IsDependentOn("__RestorePackages")
     .IsDependentOn("__Build")
     .IsDependentOn("__Test")
-    .IsDependentOn("__Publish")
-    .IsDependentOn("__Package")
     ;
 
 Task("Default")
