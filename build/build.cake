@@ -91,7 +91,7 @@ Task("Pipelines")
     .IsDependentOn("__Versioning")
     .IsDependentOn("__Build")
     .IsDependentOn("__Test")
-
+    ;
 Task("Default")
     .IsDependentOn("Build");
 
