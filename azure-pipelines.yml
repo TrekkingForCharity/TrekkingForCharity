@@ -51,7 +51,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
-    arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat="cobertura,opencover" /property:CoverletOutput="./"'
+    arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat=\"cobertura,opencover\" /property:CoverletOutput="./"'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
