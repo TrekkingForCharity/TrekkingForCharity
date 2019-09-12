@@ -11,12 +11,6 @@ steps:
   inputs:
     version: '12.7.0'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'install --global coverlet.console'
-
 - task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'TrekkingForCharity'
@@ -51,7 +45,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
-    arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat="opencover" /property:CoverletOutputFormat="cobertura" /property:CoverletOutput="./"'
+    arguments: '--logger "xunit;LogFilePath=./results.xunit.xml" --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat="opencover,cobertura" /property:CoverletOutput="./"'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
