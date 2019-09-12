@@ -66,3 +66,4 @@ steps:
     repository: 'https://registry.heroku.com/trekkingforcharity-org/web'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
+    tags: '$(Build.BuildNumber)'        
