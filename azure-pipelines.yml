@@ -25,27 +25,35 @@ steps:
     command: 'install'
     workingDir: './source/TrekkingForCharity.Web'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'restore'
-    projects: './TrekkingForCharity.sln'
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'build'
-    projects: './TrekkingForCharity.sln'
-
 - task: Npm@1
   inputs:
     command: 'custom'
     workingDir: './source/TrekkingForCharity.Web'
     customCommand: 'run release:build'
 
-- task: DotNetCoreCLI@2
+- task: Bash@3
   inputs:
-    command: 'test'
-    projects: 'tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj'
-    arguments: "--logger \"xunit;LogFilePath=./results.xunit.xml\" --configuration Release /property:CollectCoverage=True /property:CoverletOutputFormat=\"opencover,cobertura\" /property:CoverletOutput=\"./\""
+    filePath: './build/build.sh'
+    arguments: '--bootstrap'
+    workingDirectory: './build'
+
+- task: Bash@3
+  inputs:
+    filePath: './build/build.sh'
+    arguments: '--verbosity=diagnostic --target=Pipelines'
+    workingDirectory: './build'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results coverage/xunit-report.xml'
+  inputs:
+    testResultsFormat: XUnit
+    testResultsFiles: 'build/build-artifacts/cover/results.xunit.xml'
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'build/build-artifacts/cover/results.cobertura.xml'
 
 - task: SonarCloudAnalyze@1
 - task: SonarCloudPublish@1
