@@ -11,6 +11,11 @@ steps:
   inputs:
     version: '12.7.0'
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'custom'
+    custom: 'tool'
+    arguments: 'install --global coverlet.console'
 
 - task: SonarCloudPrepare@1
   inputs:
