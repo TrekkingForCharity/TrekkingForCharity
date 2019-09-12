@@ -46,20 +46,29 @@ Task("__RestorePackages")
 		NpmInstall(npmInstallSettings);
     });
 
-Task("__Build")
+Task("__BuildClient")
     .Does(() => {
         var npmRunScriptSettings = new NpmRunScriptSettings{
            ScriptName = "release:build",
            WorkingDirectory = Directory("../Source/TrekkingForCharity.Web")
         };
-		NpmRunScript(npmRunScriptSettings);  
+		NpmRunScript(npmRunScriptSettings);        
+    });
 
+Task("__BuildServer")
+    .Does(() => {
         var settings = new DotNetCoreBuildSettings {
             Configuration = "Release"
         };
 
         DotNetCoreBuild("../TrekkingForCharity.sln", settings);
     });
+
+Task("__Build")
+    .IsDependentOn("__BuildClient")
+    .IsDependentOn("__BuildServer");
+
+    
 Task("__Test")
     .Does(() => {
         var path = MakeAbsolute(coverPath + File("results.xunit.xml"));
@@ -89,7 +98,7 @@ Task("Build")
 
 Task("Pipelines")
     .IsDependentOn("__Versioning")
-    .IsDependentOn("__Build")
+    .IsDependentOn("__BuildServer")
     .IsDependentOn("__Test")
     ;
 Task("Default")
