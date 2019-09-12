@@ -85,7 +85,7 @@ Task("__Test")
             CoverletOutputName = "results"
         };
 
-        DotNetCoreTest(File("../Tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj"), testSettings, coverletSettings);
+        DotNetCoreTest(File("../tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj"), testSettings, coverletSettings);
     });
 
 Task("Build")
