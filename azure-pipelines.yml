@@ -6,7 +6,7 @@ steps:
   inputs:
     runtime: 'core'
 
-- script: docker build -f Dockerfile -t "tfc/tfcweb" --build-args "SC_LOGIN=$(SC_LOGIN)" .
+- script: docker build -f Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" .
   displayName: 'docker build'
   continueOnError: true
 
