@@ -1,14 +1,10 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.3.1
-#tool dotnet:?package=GitVersion.Tool&version=5.0.1
 #addin "Cake.Npm&version=0.17.0"
-#addin "Cake.Docker&version=0.10.1"
 
-#tool "nuget:?package=OctopusTools&version=4.15.5"
 #tool "nuget:?package=xunit.runner.console&version=2.2.0"
 #addin nuget:?package=Cake.Coverlet&version=2.3.4
 
 var target = Argument<string>("target", "Default");
-GitVersion gitversion;
 var buildPath = Directory("./build-artifacts");
 var publishPath = buildPath + Directory("publish");
 var releasePath = buildPath + Directory("release");
@@ -31,51 +27,46 @@ Task("__Clean")
         CreateDirectory(coverPath);
     });
 
-Task("__Versioning")
+Task("__RestoreServer")
     .Does(() => {
-        gitversion = GitVersion();        
-        TFBuild.Commands.UpdateBuildNumber(gitversion.FullSemVer);
+        DotNetCoreRestore("../TrekkingForCharity.sln");
     });
 
-Task("__RestorePackages")
+Task("__RestoreClient")
     .Does(() => {
         var npmInstallSettings = new NpmInstallSettings{
-            WorkingDirectory = Directory("../Source/TrekkingForCharity.Web")
+            WorkingDirectory = Directory("../source/TrekkingForCharity.Web")
         };
         
 		NpmInstall(npmInstallSettings);
+    });
+
+Task("__BuildServer")
+    .Does(() => {
+        var dotNetCoreBuildSettings = new DotNetCoreBuildSettings {
+            Configuration = "Release"
+        };
+
+        DotNetCoreBuild("../TrekkingForCharity.sln", dotNetCoreBuildSettings);     
     });
 
 Task("__BuildClient")
     .Does(() => {
         var npmRunScriptSettings = new NpmRunScriptSettings{
            ScriptName = "release:build",
-           WorkingDirectory = Directory("../Source/TrekkingForCharity.Web")
+           WorkingDirectory = Directory("../source/TrekkingForCharity.Web")
         };
-		NpmRunScript(npmRunScriptSettings);        
+		NpmRunScript(npmRunScriptSettings);
     });
 
-Task("__BuildServer")
-    .Does(() => {
-        var settings = new DotNetCoreBuildSettings {
-            Configuration = "Release"
-        };
-
-        DotNetCoreBuild("../TrekkingForCharity.sln", settings);
-    });
-
-Task("__Build")
-    .IsDependentOn("__BuildClient")
-    .IsDependentOn("__BuildServer");
-
-    
 Task("__Test")
     .Does(() => {
         var path = MakeAbsolute(coverPath + File("results.xunit.xml"));
         var testSettings = new DotNetCoreTestSettings {
             Configuration = "Release" ,
             NoBuild = true,
-            Logger = $"xunit;LogFilePath={path}"
+            Logger = $"xunit;LogFilePath={path}",
+            ArgumentCustomization = args => args.Append("--no-restore"),
         };
 
         var coverletSettings = new CoverletSettings {
@@ -88,19 +79,39 @@ Task("__Test")
         DotNetCoreTest(File("../tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj"), testSettings, coverletSettings);
     });
 
+Task("__Publish")
+    .Does(() => {
+        DotNetCorePublish(
+            "../source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj",
+            new DotNetCorePublishSettings()
+            {
+                Configuration = "Release",
+                OutputDirectory = publishPath,
+                ArgumentCustomization = args => args.Append("--no-restore"),
+            });
+    });
+
 Task("Build")
     .IsDependentOn("__Clean")
-    .IsDependentOn("__Versioning")
-    .IsDependentOn("__RestorePackages")
-    .IsDependentOn("__Build")
+    .IsDependentOn("__RestoreServer")
+    .IsDependentOn("__RestoreClient")
+    .IsDependentOn("__BuildServer")
+    .IsDependentOn("__BuildClient")
     .IsDependentOn("__Test")
+    .IsDependentOn("__Publish")
+    ;
+Task("Clean")
+    .IsDependentOn("__Clean")
     ;
 
-Task("Pipelines")
-    .IsDependentOn("__Versioning")
+Task("Publish")
+    .IsDependentOn("__RestoreServer")
     .IsDependentOn("__BuildServer")
     .IsDependentOn("__Test")
+    .IsDependentOn("__Publish")
     ;
+
+
 Task("Default")
     .IsDependentOn("Build");
 
