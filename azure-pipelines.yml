@@ -2,63 +2,37 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: UseDotNet@2
+- task: GitVersion@5
   inputs:
-    packageType: 'sdk'
-    version: '2.2.402'
+    runtime: 'core'
 
-- task: UseNode@1
-  inputs:
-    version: '12.7.0'
+- script: docker build -f Dockerfile -t "tfc/tfcweb:${Build.BuildNumber}" .
+  displayName: 'docker build'
+  continueOnError: true
 
-- task: SonarCloudPrepare@1
-  inputs:
-    SonarCloud: 'TrekkingForCharity'
-    organization: 'trekking-for-charity'
-    scannerMode: 'MSBuild'
-    projectKey: 'TrekkingForCharity'
-    extraProperties: |
-     sonar.cs.opencover.reportsPaths=**/results.opencover.xml
-
-- task: Npm@1
-  inputs:
-    command: 'install'
-    workingDir: './source/TrekkingForCharity.Web'
-
-- task: Npm@1
-  inputs:
-    command: 'custom'
-    workingDir: './source/TrekkingForCharity.Web'
-    customCommand: 'run release:build'
-
-- task: Bash@3
-  inputs:
-    filePath: './build/build.sh'
-    arguments: '--bootstrap'
-    workingDirectory: './build'
-
-- task: Bash@3
-  inputs:
-    filePath: './build/build.sh'
-    arguments: '--verbosity=diagnostic --target=Pipelines'
-    workingDirectory: './build'
+- script: |
+    export id=$(docker images --filter "label=test=true" -q | head -1)
+    docker create --name testcontainer $id
+    docker cp testcontainer:/build/cover ./testresults
+    docker rm testcontainer
+  displayName: 'get test results'
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
     testResultsFormat: XUnit
-    testResultsFiles: 'build/build-artifacts/cover/results.xunit.xml'
+    testResultsFiles: 'testresults/results.xunit.xml'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: 'build/build-artifacts/cover/results.cobertura.xml'
+    summaryFileLocation: 'testresults/results.cobertura.xml'
 
-- task: SonarCloudAnalyze@1
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
+#- task: SonarCloudAnalyze@1
+#- task: SonarCloudPublish@1
+#  inputs:
+#    pollingTimeoutSec: '300'
 
 # - task: Docker@2
 #   inputs:

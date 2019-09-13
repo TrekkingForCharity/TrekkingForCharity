@@ -11,6 +11,8 @@
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS builder
 
+ARG SC_LOGIN="UNKNOWN"
+
 WORKDIR /sln
 
 RUN apt-get update -yq \
@@ -37,14 +39,23 @@ COPY ./shared ./shared
 COPY ./source ./source
 
 RUN dotnet tool install -g Cake.Tool
+RUN dotnet tool install -g dotnet-sonarscanner
 
 ENV PATH="${PATH}:/root/.dotnet/tools"
+
+RUN if [ "$SC_LOGIN" != "UNKNOWN" ]; then dotnet sonarscanner begin /k:"trekking-for-charity" /o:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; fi
+
 RUN dotnet cake ./build/build.cake --target=Clean --verbosity=diagnostic
 
 RUN npm install --prefix ./source/TrekkingForCharity.Web/ \
     && npm run release:build --prefix ./source/TrekkingForCharity.Web/
 
+
+LABEL test=true
 RUN dotnet cake ./build/build.cake --target=Publish --verbosity=diagnostic
+
+RUN if [ "$SC_LOGIN" != "UNKNOWN" ]; then dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; fi
+
 
 #App image
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
