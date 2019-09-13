@@ -43,7 +43,7 @@ RUN dotnet tool install -g dotnet-sonarscanner
 
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-RUN dotnet sonarscanner begin /k:"trekking-for-charity" /o:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
+RUN dotnet sonarscanner begin /o:"trekking-for-charity" /k:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
 
 RUN dotnet cake ./build/build.cake --target=Clean --verbosity=diagnostic
 
