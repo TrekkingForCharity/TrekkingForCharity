@@ -13,7 +13,7 @@ steps:
 - script: |
     export id=$(docker images --filter "label=test=true" -q | head -1)
     docker create --name testcontainer $id
-    docker cp testcontainer:/sln/build/build-artifacts/cover ./cover
+    docker cp testcontainer:/sln/build/cover ./cover
     docker rm testcontainer
   displayName: 'get test results'
 
