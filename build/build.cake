@@ -1,6 +1,7 @@
 #module nuget:?package=Cake.DotNetTool.Module&version=0.3.1
 #addin "Cake.Npm&version=0.17.0"
-
+#addin "nuget:?package=Cake.Sonar"
+#tool "nuget:?package=MSBuild.SonarQube.Runner.Tool"
 #tool "nuget:?package=xunit.runner.console&version=2.2.0"
 #addin nuget:?package=Cake.Coverlet&version=2.3.4
 
@@ -27,6 +28,15 @@ Task("__Clean")
         CreateDirectory(coverPath);
     });
 
+Task("__StartAnalysis")
+    .Does(() => {
+        SonarBegin(new SonarBeginSettings{
+         Name = "trekking-for-charity",
+         Key = "TrekkingForCharity",
+         Url = "https://sonarcloud.io",
+         OpenCoverReportsPath= "../**/results.opencover.xml"  
+      });
+    });
 Task("__RestoreServer")
     .Does(() => {
         DotNetCoreRestore("../TrekkingForCharity.sln");
@@ -90,6 +100,13 @@ Task("__Publish")
                 ArgumentCustomization = args => args.Append("--no-restore"),
             });
     });
+Task("__EndAnalysis")
+    .Does(() => {
+     
+        
+        SonarEnd(new SonarEndSettings()));
+  
+    });
 
 Task("Build")
     .IsDependentOn("__Clean")
@@ -105,10 +122,12 @@ Task("Clean")
     ;
 
 Task("Publish")
+    .IsDependentOn("__StartAnalysis")
     .IsDependentOn("__RestoreServer")
     .IsDependentOn("__BuildServer")
     .IsDependentOn("__Test")
     .IsDependentOn("__Publish")
+    .IsDependentOn("__EndAnalysis")
     ;
 
 
