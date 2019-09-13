@@ -15,16 +15,17 @@ ARG SC_LOGIN="UNKNOWN"
 
 WORKDIR /sln
 
-RUN apt-get update -yq \
+# INSTALL PRE REQS
+RUN dotnet tool install -g Cake.Tool \
+    && dotnet tool install -g dotnet-sonarscanner \
+    && dotnet tool install -g coverlet.console \
+    && apt-get update -yq \
     && apt-get install curl gnupg -yq \
     && curl -sL https://deb.nodesource.com/setup_10.x | bash \
-    && apt-get install nodejs -yq \
-    && node -v \
-    && npm -v
+    && apt-get install nodejs -yq
+ENV PATH="${PATH}:/root/.dotnet/tools"
 
-
-COPY ./build/build.sh ./build/build.cake   ./build/
-
+# COPY AND MAKE BUILD FILES
 COPY ./TrekkingForCharity.sln ./
 COPY ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj  ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj
 COPY ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj  ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj
@@ -38,23 +39,33 @@ COPY ./tests ./tests
 COPY ./shared ./shared
 COPY ./source ./source
 
-RUN dotnet tool install -g Cake.Tool
-RUN dotnet tool install -g dotnet-sonarscanner
+RUN mkdir -p ./build/cover && \
+    mkdir -p ./build/publish
 
-ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet sonarscanner begin /o:"trekking-for-charity" /k:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
 
-#RUN dotnet sonarscanner begin /o:"" /k:"" /d:sonar.host.url="" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
+RUN dotnet restore "./TrekkingForCharity.sln" \
+    && npm install --prefix "./source/TrekkingForCharity.Web/"
 
-RUN dotnet cake ./build/build.cake --target=Clean --verbosity=diagnostic
-
-RUN npm install --prefix ./source/TrekkingForCharity.Web/ \
-    && npm run release:build --prefix ./source/TrekkingForCharity.Web/
-
+RUN dotnet build "./TrekkingForCharity.sln" --configuration Release --no-restore \
+    && npm run release:build --prefix "./source/TrekkingForCharity.Web/"
 
 LABEL test=true
-RUN dotnet cake ./build/build.cake --target=Publish --verbosity=diagnostic
+RUN dotnet test "./tests/TrekkingForCharity.Tests/TrekkingForCharity.Tests.csproj" \
+    --logger "xunit;LogFilePath=/sln/build/cover/results.xunit.xml" \
+    --configuration Release \
+    --no-build \
+    --no-restore \
+    /property:CollectCoverage=True \
+    /property:CoverletOutputFormat=\"cobertura,opencover\" \
+    /property:CoverletOutput="/sln/build/cover/results"
 
-#RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
+RUN dotnet publish "./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj" \
+    --output "/sln/build/build-artifacts/publish" \
+    --configuration Release \
+    --no-restore
+
+RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 
 
 #App image
