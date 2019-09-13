@@ -13,7 +13,7 @@ steps:
 - script: |
     export id=$(docker images --filter "label=test=true" -q | head -1)
     docker create --name testcontainer $id
-    docker cp testcontainer:/build/build-artifacts/cover ./testresults
+    docker cp testcontainer:/sln/build/build-artifacts/cover ./cover
     docker rm testcontainer
   displayName: 'get test results'
 
@@ -21,13 +21,13 @@ steps:
   displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
     testResultsFormat: XUnit
-    testResultsFiles: 'testresults/results.xunit.xml'
+    testResultsFiles: 'cover/results.xunit.xml'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: 'testresults/results.cobertura.xml'
+    summaryFileLocation: 'cover/results.cobertura.xml'
 
 #- task: SonarCloudAnalyze@1
 #- task: SonarCloudPublish@1
