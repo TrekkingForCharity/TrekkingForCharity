@@ -104,7 +104,7 @@ Task("__EndAnalysis")
     .Does(() => {
      
         
-        SonarEnd(new SonarEndSettings()));
+        SonarEnd(new SonarEndSettings());
   
     });
 
