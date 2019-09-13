@@ -43,7 +43,7 @@ RUN dotnet tool install -g dotnet-sonarscanner
 
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-RUN if [ "$SC_LOGIN" != "UNKNOWN" ]; then dotnet sonarscanner begin /k:"trekking-for-charity" /o:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; fi
+RUN dotnet sonarscanner begin /k:"trekking-for-charity" /o:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
 
 RUN dotnet cake ./build/build.cake --target=Clean --verbosity=diagnostic
 
@@ -54,7 +54,7 @@ RUN npm install --prefix ./source/TrekkingForCharity.Web/ \
 LABEL test=true
 RUN dotnet cake ./build/build.cake --target=Publish --verbosity=diagnostic
 
-RUN if [ "$SC_LOGIN" != "UNKNOWN" ]; then dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; fi
+RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 
 
 #App image
