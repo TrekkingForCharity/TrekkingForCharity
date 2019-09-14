@@ -14,7 +14,7 @@ if ($prId) {
 } else {
     $isDefaultBranch = true;
     $currentBranch = $env:BUILD.SOURCEBRANCH
-    $isDefaultBranch = $currentBranch == 'refs/heads/master';
+    $isDefaultBranch = $currentBranch -eq 'refs/heads/master';
     if (!isDefaultBranch) {
       # // VSTS-165 don't use Build.SourceBranchName
       Add-Content ./sonar.properties "sonar.branch.name=".BranchName($env:BUILD_SOURCEBRANCH)
