@@ -6,10 +6,15 @@ steps:
   inputs:
     runtime: 'core'
 
-- task: Tokenizer@0
+- task: PowerShell@2
   inputs:
-    sourceFilesPattern: './build/sonar-project.properties'
-    tokenDataSource: 'environmentVariables'
+    filePath: './build/sonar-props-builder.ps1'
+    workingDirectory: './build'
+
+#- task: Tokenizer@0
+#  inputs:
+#    sourceFilesPattern: './build/sonar-project.properties'
+#    tokenDataSource: 'environmentVariables'
     #condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
 
 - task: PublishBuildArtifacts@1
