@@ -46,4 +46,4 @@ if ($prId) {
     }
 }
 
-$xmlDoc.Save("./SonarQube.Analysis.xml");
+$doc.Save("./SonarQube.Analysis.xml");
