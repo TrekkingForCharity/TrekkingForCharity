@@ -22,8 +22,6 @@ function Add-Property {
 $doc = New-Object System.Xml.XmlDocument
 $doc.Load("./SonarQube.Analysis.temp.xml")
 
-Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
-
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
 if ($prId) {
     Add-Property -doc $doc -name "sonar.pullrequest.base" -value $env:SYSTEM_PULLREQUEST_TARGETBRANCH
