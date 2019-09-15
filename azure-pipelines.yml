@@ -11,39 +11,28 @@ steps:
     filePath: './build/sonar-props-builder.ps1'
     workingDirectory: './build'
 
-#- task: Tokenizer@0
-#  inputs:
-#    sourceFilesPattern: './build/sonar-project.properties'
-#    tokenDataSource: 'environmentVariables'
-    #condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+- script: docker build -f build/Web.Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" .
+  displayName: 'docker build'
+  continueOnError: true
 
-- task: PublishBuildArtifacts@1
+- script: |
+    export id=$(docker images --filter "label=test=true" -q | head -1)
+    docker create --name testcontainer $id
+    docker cp testcontainer:/sln/build/cover ./cover
+    docker rm testcontainer
+  displayName: 'get test results'
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
-    PathtoPublish: './build/'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-# - script: docker build -f build/Web.Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" .
-#   displayName: 'docker build'
-#   continueOnError: true
+    testResultsFormat: XUnit
+    testResultsFiles: 'cover/results.xunit.xml'
 
-# - script: |
-#     export id=$(docker images --filter "label=test=true" -q | head -1)
-#     docker create --name testcontainer $id
-#     docker cp testcontainer:/sln/build/cover ./cover
-#     docker rm testcontainer
-#   displayName: 'get test results'
-
-# - task: PublishTestResults@2
-#   displayName: 'Publish Test Results coverage/xunit-report.xml'
-#   inputs:
-#     testResultsFormat: XUnit
-#     testResultsFiles: 'cover/results.xunit.xml'
-
-# - task: PublishCodeCoverageResults@1
-#   displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
-#   inputs:
-#     codeCoverageTool: Cobertura
-#     summaryFileLocation: 'cover/results.cobertura.xml'
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: 'cover/results.cobertura.xml'
 
 #- task: SonarCloudAnalyze@1
 #- task: SonarCloudPublish@1

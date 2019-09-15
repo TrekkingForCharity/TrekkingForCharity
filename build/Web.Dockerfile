@@ -27,6 +27,7 @@ RUN dotnet tool install -g Cake.Tool \
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # COPY AND MAKE BUILD FILES
+COPY ./build/sonar.properties ./build/sonar.properties 
 COPY ./TrekkingForCharity.sln ./
 COPY ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj  ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj
 COPY ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj  ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj
@@ -43,7 +44,10 @@ COPY ./source ./source
 RUN mkdir -p ./build/cover && \
     mkdir -p ./build/publish
 
-RUN dotnet sonarscanner begin /o:"trekking-for-charity" /k:"TrekkingForCharity" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths=**/results.opencover.xml /d:sonar.login=${SC_LOGIN}; exit 0
+RUN dotnet sonarscanner begin \
+    /d:sonar.login=${SC_LOGIN} \
+    /d:project.settings=./build/sonar.properties; \
+    exit 0;
 
 RUN dotnet restore "./TrekkingForCharity.sln" \
     && npm install --prefix "./source/TrekkingForCharity.Web/"
