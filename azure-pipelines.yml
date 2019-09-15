@@ -17,7 +17,7 @@ steps:
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-- script: docker build -f build/Web.Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(Build.BuildNumber)" .
+- script: docker build -f build/Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(Build.BuildNumber)" .
   displayName: 'docker build'
   continueOnError: true
 
