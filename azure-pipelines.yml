@@ -12,7 +12,7 @@ steps:
     SonarCloud: 'TrekkingForCharity'
     organization: 'trekking-for-charity'
     scannerMode: 'MSBuild'
-    projectKey: 'TrekkingForCharity'
+    projectKey: 'TrekkingForCharity_TrekkingForCharity'
     extraProperties: |
      sonar.cs.opencover.reportsPaths=**/results.opencover.xml
 
