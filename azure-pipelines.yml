@@ -28,6 +28,13 @@ steps:
     docker rm testcontainer
   displayName: 'get test results'
 
+- script: |
+    docker login --username=$(HEROKU_USERNAME) --password=$(HEROKU_API_KEY) registry.heroku.com
+    docker tag "tfc/tfcweb" "registry.heroku.com/$(HEROKU_APP_NAME)/web"
+    docker push registry.heroku.com/$(HEROKU_APP_NAME)/web    
+  displayName: 'push to heroku'
+  continueOnError: true
+
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
