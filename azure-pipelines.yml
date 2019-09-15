@@ -1,38 +1,41 @@
 pool:
-  vmImage: 'windows-2019'
+  vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
+- task: GitVersion@5
   inputs:
-    versionSpec: '10.15.1'
-  displayName: 'Install Node.js'
+    runtime: 'core'
 
-- task: SonarCloudPrepare@1
+- task: PowerShell@2
   inputs:
-    SonarCloud: 'TrekkingForCharity'
-    organization: 'trekking-for-charity'
-    scannerMode: 'MSBuild'
-    projectKey: 'TrekkingForCharity_TrekkingForCharity'
-    extraProperties: |
-     sonar.cs.opencover.reportsPaths=**/results.opencover.xml
+    filePath: './build/sonar-props-builder.ps1'
+    workingDirectory: './build'
 
-- task: Cake@0
+- task: PublishBuildArtifacts@1
   inputs:
-    script: 'Build/build.cake'
-    target: 'Default'
-    verbosity: 'Verbose'
+    PathtoPublish: './build'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+- script: docker build -f build/Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(Build.BuildNumber)" .
+  displayName: 'docker build'
+  continueOnError: true
+
+- script: |
+    export id=$(docker images --filter "label=test=true" -q | head -1)
+    docker create --name testcontainer $id
+    docker cp testcontainer:/sln/build/cover ./cover
+    docker rm testcontainer
+  displayName: 'get test results'
+
 - task: PublishTestResults@2
   displayName: 'Publish Test Results coverage/xunit-report.xml'
   inputs:
     testResultsFormat: XUnit
-    testResultsFiles: 'build/build-artifacts/cover/results.xunit.xml'
+    testResultsFiles: 'cover/results.xunit.xml'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: 'build/build-artifacts/cover/results.cobertura.xml'
-- task: SonarCloudAnalyze@1
-- task: SonarCloudPublish@1
-  inputs:
-    pollingTimeoutSec: '300'
+    summaryFileLocation: 'cover/results.cobertura.xml'

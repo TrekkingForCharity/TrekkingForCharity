@@ -4,13 +4,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectGuid>{c537455f-e8de-4bb1-b317-14677980a2d2}</ProjectGuid>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\..\Shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\Shared\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MaybeMonad" Version="1.0.1.1" />
@@ -20,5 +13,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />
 
 </Project>

@@ -1,17 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProjectGuid>{912ff5df-1540-4aa2-b846-2ca082c72d32}</ProjectGuid>
   </PropertyGroup>
-
-<ItemGroup>
-    <Compile Include="..\..\shared\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\shared\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.4.0" />
@@ -26,5 +18,7 @@
     <ProjectReference Include="..\TrekkingForCharity.Core\TrekkingForCharity.Core.csproj" />
     <ProjectReference Include="..\TrekkingForCharity.Domain\TrekkingForCharity.Domain.csproj" />
   </ItemGroup>
+
+  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />
 
 </Project>
