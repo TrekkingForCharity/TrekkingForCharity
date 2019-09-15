@@ -1,3 +1,11 @@
+function Output-BranchName {
+ param( [string]$fullName )
+ if ($fullName.StartsWith("refs/heads/") -eq $TRUE) {
+    return $fullName.Substring(11);
+  }
+  return $fullName;
+}
+
 Add-Content ./sonar.properties "sonar.projectKey=trekking-for-charity"
 Add-Content ./sonar.properties "sonar.projectName=TrekkingForCharity"
 Add-Content ./sonar.properties "sonar.projectVersion=$env:BUILD_BUILDNUMBER"
@@ -16,16 +24,9 @@ if ($prId) {
     $currentBranch = $env:BUILD_SOURCEBRANCH
     $isDefaultBranch = $currentBranch -eq 'refs/heads/master';
     if ($isDefaultBranch -ne $TRUE) {
-        $formattedBranchName = BranchName -fullName $env:BUILD_SOURCEBRANCH
+        $formattedBranchName = Output-BranchName -fullName $env:BUILD_SOURCEBRANCH
       # // VSTS-165 don't use Build.SourceBranchName
       Add-Content ./sonar.properties "sonar.branch.name=$formattedBranchName"
     }
 }
 
-function BranchName {
- param( [string]$fullName )
- if ($fullName.StartsWith("refs/heads/") -eq $TRUE) {
-    return $fullName.Substring(11);
-  }
-  return $fullName;
-}
