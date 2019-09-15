@@ -22,7 +22,7 @@ function Add-Property {
 $doc = New-Object System.Xml.XmlDocument
 $doc.Load("./SonarQube.Analysis.temp.xml")
 
-Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
+#Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
 
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
 if ($prId) {
@@ -39,7 +39,7 @@ if ($prId) {
     if ($isDefaultBranch -ne $TRUE) {
         $formattedBranchName = Out-BranchName -fullName $env:BUILD_SOURCEBRANCH
       # // VSTS-165 don't use Build.SourceBranchName
-      Add-Property -doc $doc -name "sonar.branch.name" -value $formattedBranchName
+      #Add-Property -doc $doc -name "sonar.branch.name" -value $formattedBranchName
     }
 }
 

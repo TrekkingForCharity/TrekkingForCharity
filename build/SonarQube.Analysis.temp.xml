@@ -3,4 +3,5 @@
     <Property Name="sonar.projectKey">trekking-for-charity</Property>
     <Property Name="sonar.projectName">TrekkingForCharity</Property>
     <Property Name="sonar.cs.opencover.reportsPaths">**/results.opencover.xml</Property>
+    <Property Name="sonar.branch.name">feature/containerize</Property>
 </SonarQubeAnalysisProperties>
