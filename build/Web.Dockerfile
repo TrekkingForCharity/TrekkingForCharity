@@ -45,8 +45,9 @@ RUN mkdir -p ./build/cover && \
     mkdir -p ./build/publish
 
 RUN dotnet sonarscanner begin \
-    /d:sonar.login=${SC_LOGIN} \
-    /d:project.settings=./build/sonar.properties; \
+    /o:"trekking-for-charity" \
+    /k:"TrekkingForCharity" \
+    /d:project.settings="./build/sonar.properties"; \
     exit 0;
 
 RUN dotnet restore "./TrekkingForCharity.sln" \

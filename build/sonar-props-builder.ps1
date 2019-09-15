@@ -9,6 +9,10 @@ function Output-BranchName {
 Add-Content ./sonar.properties "sonar.projectKey=trekking-for-charity"
 Add-Content ./sonar.properties "sonar.projectName=TrekkingForCharity"
 Add-Content ./sonar.properties "sonar.projectVersion=$env:BUILD_BUILDNUMBER"
+Add-Content ./sonar.properties "sonar.cs.opencover.reportsPaths=**/results.opencover.xml"
+Add-Content ./sonar.properties "sonar.host.url=https://sonarcloud.io"
+Add-Content ./sonar.properties "sonar.login=$env:SC_LOGIN"
+
 
 
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
