@@ -49,6 +49,7 @@ RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
     /v:${SC_VERSION} \
+    /d:sonar.login=${SC_LOGIN} \
     /s:"/sln/SonarQube.Analysis.xml"; \
     exit 0;
 
@@ -73,7 +74,7 @@ RUN dotnet publish "./source/TrekkingForCharity.Web/TrekkingForCharity.Web.cspro
     --configuration Release \
     --no-restore
 
-RUN dotnet sonarscanner end; exit 0
+RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 
 
 #App image

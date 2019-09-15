@@ -13,17 +13,15 @@ function Add-Property {
         [string] $value
     )
     
-    $child = $doc.CreateElement("Property")
+    $child = $doc.CreateElement("Property", $doc.DocumentElement.NamespaceURI)
     $child.SetAttribute("Name", $name)
     $child.InnerText = $value
-    $child.RemoveAttribute("xmlns")
     $doc.DocumentElement.AppendChild($child)
 }
 
 $doc = New-Object System.Xml.XmlDocument
 $doc.Load("./SonarQube.Analysis.temp.xml")
 
-Add-Property -doc $doc -name "sonar.login" -value $env:SC_LOGIN
 Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
 
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
