@@ -11,6 +11,12 @@ steps:
     filePath: './build/sonar-props-builder.ps1'
     workingDirectory: './build'
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: './build'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
 - script: docker build -f build/Web.Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" .
   displayName: 'docker build'
   continueOnError: true
