@@ -12,6 +12,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS builder
 
 ARG SC_LOGIN="UNKNOWN"
+ARG SC_VERSION="UNKNOWN"
 
 WORKDIR /sln
 
@@ -47,7 +48,7 @@ RUN mkdir -p ./build/cover && \
 RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
-    /d:sonar.projectVersion ${BUILD_BUILDNUMBER} \
+    /d:sonar.projectVersion ${SC_VERSION} \
     /d:sonar.login=${SC_LOGIN} \
     /s:"/sln/SonarQube.Analysis.xml"; \
     exit 0;
