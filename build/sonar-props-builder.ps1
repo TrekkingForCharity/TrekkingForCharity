@@ -23,9 +23,6 @@ $doc = New-Object System.Xml.XmlDocument
 $doc.Load("./SonarQube.Analysis.temp.xml")
 
 Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
-Add-Property -doc $doc -name "sonar.login" -value $env:SC_LOGIN
-
-
 
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
 if ($prId) {

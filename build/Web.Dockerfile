@@ -27,7 +27,6 @@ RUN dotnet tool install -g Cake.Tool \
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # COPY AND MAKE BUILD FILES
-COPY ./build/SonarQube.Analysis.xml ./.sonarqube/SonarQube.Analysis.xml 
 COPY ./build/SonarQube.Analysis.xml ./SonarQube.Analysis.xml 
 COPY ./TrekkingForCharity.sln ./
 COPY ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj  ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj
@@ -48,7 +47,8 @@ RUN mkdir -p ./build/cover && \
 RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
-    /s:"SonarQube.Analysis.xml"; \
+    /d:sonar.login=${SC_LOGIN} \
+    /s:"/sln/SonarQube.Analysis.xml"; \
     exit 0;
 
 RUN dotnet restore "./TrekkingForCharity.sln" \
