@@ -28,6 +28,7 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # COPY AND MAKE BUILD FILES
 COPY ./build/SonarQube.Analysis.xml ./.sonarqube/SonarQube.Analysis.xml 
+COPY ./build/SonarQube.Analysis.xml ./SonarQube.Analysis.xml 
 COPY ./TrekkingForCharity.sln ./
 COPY ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj  ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj
 COPY ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj  ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj
