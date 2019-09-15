@@ -27,7 +27,7 @@ RUN dotnet tool install -g Cake.Tool \
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # COPY AND MAKE BUILD FILES
-COPY ./build/sonar.properties ./build/sonar.properties 
+COPY ./build/sonar.properties ./sonar.properties 
 COPY ./TrekkingForCharity.sln ./
 COPY ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj  ./shared/TrekkingForCharity.Shared/TrekkingForCharity.Shared.shproj
 COPY ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj  ./source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj
@@ -47,7 +47,7 @@ RUN mkdir -p ./build/cover && \
 RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
-    /s:"./build/sonar.properties"; \
+    /s:"sonar.properties"; \
     exit 0;
 
 RUN dotnet restore "./TrekkingForCharity.sln" \
