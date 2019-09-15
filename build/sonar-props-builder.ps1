@@ -1,4 +1,4 @@
-function Output-BranchName {
+function Out-BranchName {
  param( [string]$fullName )
  if ($fullName.StartsWith("refs/heads/") -eq $TRUE) {
     return $fullName.Substring(11);
@@ -6,31 +6,44 @@ function Output-BranchName {
   return $fullName;
 }
 
-Add-Content ./sonar.properties "sonar.projectKey=trekking-for-charity"
-Add-Content ./sonar.properties "sonar.projectName=TrekkingForCharity"
-Add-Content ./sonar.properties "sonar.projectVersion=$env:BUILD_BUILDNUMBER"
-Add-Content ./sonar.properties "sonar.cs.opencover.reportsPaths=**/results.opencover.xml"
-Add-Content ./sonar.properties "sonar.host.url=https://sonarcloud.io"
-Add-Content ./sonar.properties "sonar.login=$env:SC_LOGIN"
+function Add-Property {
+    param(
+        [System.Xml.XmlDocument] $doc,
+        [string] $name,
+        [string] $value
+    )
+    
+    $child = $doc.CreateElement("Property")
+    $child.SetAttribute("Name", $name) #"sonar.projectVersion")
+    $child.InnerText =  $value #$env:BUILD_BUILDNUMBER
+    $doc.DocumentElement.AppendChild($child)
+}
+
+$doc = New-Object System.Xml.XmlDocument
+$doc.Load("./SonarQube.Analysis.temp.xml")
+
+Add-Property -doc $doc -name "sonar.projectVersion" -value $env:BUILD_BUILDNUMBER
+Add-Property -doc $doc -name "sonar.login" -value $env:SC_LOGIN
 
 
 
 $prId = $env:SYSTEM_PULLREQUEST_PULLREQUESTID
 if ($prId) {
-    Add-Content ./sonar.properties "sonar.pullrequest.base=$env:SYSTEM_PULLREQUEST_TARGETBRANCH"
-    Add-Content ./sonar.properties "sonar.pullrequest.branch=$env:SYSTEM_PULLREQUEST_SOURCEBRANCH"
+    Add-Property -doc $doc -name "sonar.pullrequest.base" -value $env:SYSTEM_PULLREQUEST_TARGETBRANCH
+    Add-Property -doc $doc -name "sonar.pullrequest.branch" -value $env:SYSTEM_PULLREQUEST_SOURCEBRANCH
     
-    Add-Content ./sonar.properties "sonar.pullrequest.key=$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"
-    Add-Content ./sonar.properties "sonar.pullrequest.provider=github"
-    Add-Content ./sonar.properties "sonar.pullrequest.github.repository=$env:REPO_NAME_VAR"
+    Add-Property -doc $doc -name "sonar.pullrequest.key" -value $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
+    Add-Property -doc $doc -name "sonar.pullrequest.provider" -value github
+    Add-Property -doc $doc -name "sonar.pullrequest.github.repository" -value $env:REPO_NAME_VAR
 } else {
     $isDefaultBranch = $TRUE;
     $currentBranch = $env:BUILD_SOURCEBRANCH
     $isDefaultBranch = $currentBranch -eq 'refs/heads/master';
     if ($isDefaultBranch -ne $TRUE) {
-        $formattedBranchName = Output-BranchName -fullName $env:BUILD_SOURCEBRANCH
+        $formattedBranchName = Out-BranchName -fullName $env:BUILD_SOURCEBRANCH
       # // VSTS-165 don't use Build.SourceBranchName
-      Add-Content ./sonar.properties "sonar.branch.name=$formattedBranchName"
+      Add-Property -doc $doc -name "sonar.branch.name" -value $formattedBranchName
     }
 }
 
+$xmlDoc.Save("./SonarQube.Analysis.xml");
