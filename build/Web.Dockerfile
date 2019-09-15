@@ -47,7 +47,7 @@ RUN mkdir -p ./build/cover && \
 RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
-    /d:project.settings="./build/sonar.properties"; \
+    /s:"./build/sonar.properties"; \
     exit 0;
 
 RUN dotnet restore "./TrekkingForCharity.sln" \
