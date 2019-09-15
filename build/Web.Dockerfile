@@ -47,6 +47,7 @@ RUN mkdir -p ./build/cover && \
 RUN dotnet sonarscanner begin \
     /o:"trekking-for-charity" \
     /k:"TrekkingForCharity" \
+    /d:sonar.projectVersion ${BUILD_BUILDNUMBER} \
     /d:sonar.login=${SC_LOGIN} \
     /s:"/sln/SonarQube.Analysis.xml"; \
     exit 0;
