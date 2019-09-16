@@ -14,7 +14,7 @@ function Add-Property {
 $doc = New-Object System.Xml.XmlDocument
 $doc.Load("./Build.Artifacts.temp.xml")
 
-Add-Property -doc $doc -name "build.version" -value $env:BUILD_BUILDNUMBER
+Add-Property -doc $doc -name "build.version" -value $env:GITVERSION_SEMVER
 Add-Property -doc $doc -name "github.commitSha" -value $env:GITVERSION_SHA
 Add-Property -doc $doc -name "github.commitShortSha" -value $env:GITVERSION_SHORTSHA
 
