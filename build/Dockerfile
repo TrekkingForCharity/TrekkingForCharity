@@ -1,14 +1,3 @@
-# Build image
-# FROM mono:5.20.1.34 AS mono
-# WORKDIR /sln
-# ENV CAKE_VERSION 0.26.1
-# ENV CAKE_TARGET_FRAMEWORK netcoreapp2.0
-# 
-#COPY ./build/tools/packages.config   ./build/tools/
-#RUN cd build && ls
-# RUN ./build/build.sh build.cake --target=Build
-
-
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS builder
 
 ARG SC_LOGIN="UNKNOWN"
@@ -81,5 +70,5 @@ RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Production
-ENTRYPOINT ["dotnet", "TrekkingForCharity.Web.dll"]
 COPY --from=builder ./sln/build/build-artifacts/publish .
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet TrekkingForCharity.Web.dll

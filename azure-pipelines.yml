@@ -3,22 +3,18 @@ pool:
 
 steps:
 - task: GitVersion@5
+  displayName: 'Calculating version data'
   inputs:
     runtime: 'core'
 
 - task: PowerShell@2
+  displayName: 'Generating Sonar scanner settings'
   inputs:
     filePath: './build/sonar-props-builder.ps1'
     workingDirectory: './build'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: './build'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
-
 - script: docker build -f build/Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(Build.BuildNumber)" .
-  displayName: 'docker build'
+  displayName: 'Building docker container'
   continueOnError: true
 
 - script: |
@@ -26,16 +22,40 @@ steps:
     docker create --name testcontainer $id
     docker cp testcontainer:/sln/build/cover ./cover
     docker rm testcontainer
-  displayName: 'get test results'
+  displayName: 'Exporting test results'
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results coverage/xunit-report.xml'
+  displayName: 'Publishing test results'
   inputs:
     testResultsFormat: XUnit
     testResultsFiles: 'cover/results.xunit.xml'
 
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage from coverage/cobertura-coverage.xml'
+  displayName: 'Publish code coverage data'
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: 'cover/results.cobertura.xml'
+
+- script: |
+    docker login --username=$(HEROKU_USERNAME) --password=$(HEROKU_API_KEY) registry.heroku.com
+    docker tag "tfc/tfcweb" "registry.heroku.com/$(HEROKU_APP_NAME)/web:$(Build.BuildNumber)"
+    docker push registry.heroku.com/$(HEROKU_APP_NAME)/web    
+  displayName: 'Push container to the Heroku registry'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: PowerShell@2
+  displayName: 'Generating artifact data'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    filePath: './build/artifact-builder.ps1'
+    workingDirectory: './build'
+    
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publishing artifact data'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    PathtoPublish: './build/Build.Artifacts.xml'
+    ArtifactName: 'build-artifacts'
+    publishLocation: 'Container'
+  
