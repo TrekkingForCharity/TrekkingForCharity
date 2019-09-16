@@ -81,5 +81,5 @@ RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Production
-ENTRYPOINT ["dotnet", "TrekkingForCharity.Web.dll"]
 COPY --from=builder ./sln/build/build-artifacts/publish .
+CMD dotnet TrekkingForCharity.Web.dll
