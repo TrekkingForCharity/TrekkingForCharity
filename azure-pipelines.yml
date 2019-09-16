@@ -38,8 +38,8 @@ steps:
 
 - script: |
     docker login --username=$(HEROKU_USERNAME) --password=$(HEROKU_API_KEY) registry.heroku.com
-    docker tag "tfc/tfcweb" "registry.heroku.com/$(HEROKU_APP_NAME)/web:$(Build.BuildNumber)"
-    docker push registry.heroku.com/$(HEROKU_APP_NAME)/web    
+    docker tag "tfc/tfcweb" "registry.heroku.com/$(HEROKU_APP_NAME)/web:$(GitVersion.SemVer)"
+    docker push registry.heroku.com/$(HEROKU_APP_NAME)/web:$(GitVersion.SemVer)    
   displayName: 'Push container to the Heroku registry'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
