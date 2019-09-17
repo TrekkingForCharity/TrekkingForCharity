@@ -67,7 +67,7 @@ steps:
     repositoryName: 'TrekkingForCharity/TrekkingForCharity'
     action: 'create'
     target: '$(Build.SourceVersion)'
-    tagSource: 'gitTag'
+    tagSource: 'userSpecifiedTag'
     tag: 'v$(Build.BuildNumber)'
     title: 'v$(Build.BuildNumber)'
     isDraft: true
