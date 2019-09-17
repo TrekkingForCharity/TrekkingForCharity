@@ -59,3 +59,15 @@ steps:
     ArtifactName: 'build-artifacts'
     publishLocation: 'Container'
   
+- task: GitHubRelease@1
+  displayName: 'Create draft Github release'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  inputs:
+    gitHubConnection: 'Github Releases'
+    repositoryName: 'TrekkingForCharity/TrekkingForCharity'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'gitTag'
+    assets: 
+    isDraft: true
+    addChangeLog: false
