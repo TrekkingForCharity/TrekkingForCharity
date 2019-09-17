@@ -13,7 +13,7 @@ steps:
     filePath: './build/sonar-props-builder.ps1'
     workingDirectory: './build'
 
-- script: docker build -f build/Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(Build.BuildNumber)" .
+- script: docker build -f build/Dockerfile -t "tfc/tfcweb" --build-arg "SC_LOGIN=$(SC_LOGIN)" --build-arg "SC_VERSION=$(GitVersion.SemVer)" .
   displayName: 'Building docker container'
   continueOnError: true
 
@@ -68,7 +68,7 @@ steps:
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'userSpecifiedTag'
-    tag: 'v$(Build.BuildNumber)'
-    title: 'v$(Build.BuildNumber)'
-    isDraft: true
+    tag: 'v$(GitVersion.SemVer)'
+    title: 'v$(GitVersion.SemVer)'
+    isPreRelease: true
     addChangeLog: false
