@@ -11,7 +11,7 @@ namespace TrekkingForCharity.Web.Infrastructure.ServiceConfiguration
         public static IServiceCollection AddCustomizedMvc(this IServiceCollection services)
         {
             services
-                .AddMvc()
+                .AddMvc(setup => { setup.EnableEndpointRouting = false; })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddFeatureFolders();
             return services;

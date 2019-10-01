@@ -56,7 +56,7 @@ RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 
 
 #App image
-FROM mcr.microsoft.com/dotnet/core/aspnet::3.0-alpine
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Production
 COPY --from=builder ./sln/build/build-artifacts/publish .
