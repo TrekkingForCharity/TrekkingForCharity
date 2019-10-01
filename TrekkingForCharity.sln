@@ -33,6 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{444BF7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{0536613E-C57D-42C9-86E6-1B1AB882EB3F}"
 	ProjectSection(SolutionItems) = preProject
+		build\artifact-builder.ps1 = build\artifact-builder.ps1
+		build\Build.Artifacts.temp.xml = build\Build.Artifacts.temp.xml
+		build\Dockerfile = build\Dockerfile
+		build\sonar-props-builder.ps1 = build\sonar-props-builder.ps1
+		build\SonarQube.Analysis.temp.xml = build\SonarQube.Analysis.temp.xml
 		build\watch-tests.cmd = build\watch-tests.cmd
 	EndProjectSection
 EndProject

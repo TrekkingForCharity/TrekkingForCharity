@@ -1,20 +1,9 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-stretch AS builder
+FROM trekkingforcharity/aspcore-prodbase:latest AS builder
 
 ARG SC_LOGIN="UNKNOWN"
 ARG SC_VERSION="UNKNOWN"
 
 WORKDIR /sln
-
-# INSTALL PRE REQS
-RUN dotnet tool install -g Cake.Tool \
-    && dotnet tool install -g dotnet-sonarscanner \
-    && dotnet tool install -g coverlet.console \
-    && apt-get update -yq \
-    && apt-get install curl gnupg -yq \
-    && curl -sL https://deb.nodesource.com/setup_10.x | bash \
-    && apt-get install nodejs -yq \
-    && apt-get install default-jre -yq
-ENV PATH="${PATH}:/root/.dotnet/tools"
 
 # COPY AND MAKE BUILD FILES
 COPY ./build/SonarQube.Analysis.xml ./SonarQube.Analysis.xml 
@@ -67,7 +56,7 @@ RUN dotnet sonarscanner end /d:sonar.login=${SC_LOGIN}; exit 0
 
 
 #App image
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-stretch-slim
+FROM mcr.microsoft.com/dotnet/core/aspnet::3.0-alpine
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Production
 COPY --from=builder ./sln/build/build-artifacts/publish .

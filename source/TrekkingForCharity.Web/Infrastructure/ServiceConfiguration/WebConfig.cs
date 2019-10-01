@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace TrekkingForCharity.Web.Infrastructure.ServiceConfiguration
 {
@@ -11,18 +12,17 @@ namespace TrekkingForCharity.Web.Infrastructure.ServiceConfiguration
         {
             services
                 .AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddFeatureFolders();
             return services;
         }
 
         public static IApplicationBuilder AddCustomizedErrorResponse(
-            this IApplicationBuilder app, IHostingEnvironment env)
+            this IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
