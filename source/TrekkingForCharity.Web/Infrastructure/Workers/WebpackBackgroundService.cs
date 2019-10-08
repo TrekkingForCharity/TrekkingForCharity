@@ -40,8 +40,8 @@ namespace TrekkingForCharity.Web.Infrastructure.Workers
                 StartInfo = startInfo,
                 EnableRaisingEvents = true,
             };
-            this._process.ErrorDataReceived += (sender, args) => { Debug.Write(args.Data); };
-            this._process.OutputDataReceived += (sender, args) => { Debug.Write(args.Data); };
+            this._process.ErrorDataReceived += (sender, args) => { Console.Write(args.Data); };
+            this._process.OutputDataReceived += (sender, args) => { Console.Write(args.Data); };
             this._process.Exited += (sender, args) =>
             {
                 tcs.SetResult(this._process.ExitCode);

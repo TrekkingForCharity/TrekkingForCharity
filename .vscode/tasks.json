@@ -1,37 +1,10 @@
 {
     "version": "2.0.0",
     "tasks": [
-        {
-            "label": "test",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "test",
-                "${workspaceFolder}/Tests/CTO.CyberCentral.Scanner.Tests/CTO.CyberCentral.Scanner.Tests.csproj"
-            ],
-            "problemMatcher": "$msCompile",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            }
-        },
-        {
-            "label": "test with coverage",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "test",
-                "/p:CollectCoverage=true",
-                "/p:CoverletOutputFormat=lcov",
-                "/p:CoverletOutput=../../lcov.info",
-                "${workspaceFolder}/Tests/CTO.CyberCentral.Scanner.Tests/CTO.CyberCentral.Scanner.Tests.csproj"
-            ],
-            "problemMatcher": "$msCompile",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            }
-        },
+       {
+        "label": "Launch Dockerized App",
+        "command": "docker run --rm -it -p 54352:80 -v ${workspaceFolder}:/app/ -w /app/source/TrekkingForCharity.Web --name treks-debug -e ASPNETCORE_URLS=http://+:80 trekkingforcharity/aspcore-devbase:latest dotnet watch run -c Debug"        
+       },
         {
             "label": "watch test with coverage",
             "command": "${workspaceFolder}/Build/watch-tests.cmd",
