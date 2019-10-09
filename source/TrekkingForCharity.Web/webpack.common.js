@@ -51,24 +51,6 @@ module.exports = {
             chunkFilename: '[id].css',
             ignoreOrder: false
         }),
-        new HtmlWebpackPlugin({
-            inject: 'body',
-            filename: '../Features/Shared/_Layout.cshtml',
-            template: './Features/Shared/_Layout.Template.cshtml',
-            hash: true,
-            files: {
-                css: ['styles.css'],
-                js: ['app.js']
-            },
-            chucks: {
-                head: {
-                    css: ['styles.css']
-                },
-                main: {
-                    js: ['app.js']
-                }
-            }
-        }),
         new CopyWebpackPlugin([
              './Resources/Images/favicon.ico',
         ])

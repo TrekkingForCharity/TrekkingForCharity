@@ -30,12 +30,18 @@
     <ProjectReference Include="..\TrekkingForCharity.Queries\TrekkingForCharity.Queries.csproj" />
   </ItemGroup>
 
+  <!--<ItemGroup>
+    <Content Update="Features\Shared\_Layout.cshtml"  Watch="false" />
+  </ItemGroup>-->
+
   <ItemGroup>
-    <Content Update="Features\Home\Index.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <Watch Remove="Features\Shared\_Layout.cshtml" />
   </ItemGroup>
 
-  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />  
 
 </Project>

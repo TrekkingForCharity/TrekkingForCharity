@@ -6,6 +6,7 @@ namespace TrekkingForCharity.Web.Features.Home
     {
         public IActionResult Index()
         {
+            this.ViewBag.Test = "test";
             return this.View();
         }
     }

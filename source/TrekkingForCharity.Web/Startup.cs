@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TrekkingForCharity.Web.Infrastructure.MediatrConfiguration;
 using TrekkingForCharity.Web.Infrastructure.ServiceConfiguration;
+using TrekkingForCharity.Web.Infrastructure.Workers;
 
 namespace TrekkingForCharity.Web
 {
@@ -22,6 +23,7 @@ namespace TrekkingForCharity.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+                .AddJsonFile($"appsettings.local.json", true)
                 .AddEnvironmentVariables();
 
             this.Configuration = builder.Build();
@@ -36,7 +38,8 @@ namespace TrekkingForCharity.Web
                 .AddConfigurationRoot()
                 .AddDataStores(this.Configuration)
                 .AddCustomizedAuthentication(this.Configuration)
-                .AddCustomizedMvc();
+                .AddCustomizedMvc()
+                .AddHostedService<WebpackBackgroundService>();
 
             var container = new ContainerBuilder();
             container.Populate(services);

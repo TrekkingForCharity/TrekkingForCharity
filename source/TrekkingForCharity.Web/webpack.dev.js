@@ -7,5 +7,9 @@ module.exports = merge(common, {
     devtool: 'inline-source-map',
     plugins: [
         new CleanWebpackPlugin()        
-    ]
+    ],
+    watchOptions: {
+        aggregateTimeout: 300,
+        poll: 1000
+    }
 });

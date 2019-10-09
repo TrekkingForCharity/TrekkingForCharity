@@ -1,8 +1,5 @@
 FROM trekkingforcharity/aspcore-devbase AS base
-WORKDIR /app
 EXPOSE 80
-
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
 WORKDIR /src
 COPY ["source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj", "source/TrekkingForCharity.Web/"]
 COPY ["source/TrekkingForCharity.Infrastructure/TrekkingForCharity.Infrastructure.csproj", "source/TrekkingForCharity.Infrastructure/"]
@@ -12,12 +9,5 @@ COPY ["source/TrekkingForCharity.Queries/TrekkingForCharity.Queries.csproj", "so
 RUN dotnet restore "source/TrekkingForCharity.Web/TrekkingForCharity.Web.csproj"
 COPY . .
 WORKDIR "/src/source/TrekkingForCharity.Web"
-RUN dotnet build "TrekkingForCharity.Web.csproj" -c Release -o /app
-
-FROM build AS publish
-RUN dotnet publish "TrekkingForCharity.Web.csproj" -c Release -o /app
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app .
-CMD dotnet TrekkingForCharity.Web.dll
+ENV ASPNETCORE_URLS "http://0.0.0.0:80"
+ENTRYPOINT ["dotnet", "run", "TrekkingForCharity.Web.csproj", "-c", "Debug", "-o", "/app"]
