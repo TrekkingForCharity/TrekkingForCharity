@@ -42,26 +42,6 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />
-
-  <Target Name="DebugNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('node_modules') ">
-    <!-- Ensure Node.js is installed -->
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project." />
-    <Message Importance="high" Text="Performing npm install..." />
-    <Exec Command="npm install" />
-  </Target>
-
-  <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot') ">
-    <!-- Ensure Node.js is installed -->
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project." />
-    <Message Importance="high" Text="Performing first-run Webpack build..." />
-    <Exec Command="npm run dev:build" />
-  </Target>
+  <Import Project="..\..\shared\TrekkingForCharity.Shared\TrekkingForCharity.Shared.projitems" Label="Shared" />  
 
 </Project>

@@ -11,11 +11,3 @@ COPY . .
 WORKDIR "/src/source/TrekkingForCharity.Web"
 ENV ASPNETCORE_URLS "http://0.0.0.0:80"
 ENTRYPOINT ["dotnet", "run", "TrekkingForCharity.Web.csproj", "-c", "Debug", "-o", "/app"]
-
-# FROM build AS publish
-# RUN dotnet publish "TrekkingForCharity.Web.csproj" -c Release -o /app
-
-# FROM base AS final
-# WORKDIR /app
-# COPY --from=publish /app .
-#CMD dotnet TrekkingForCharity.Web.dll

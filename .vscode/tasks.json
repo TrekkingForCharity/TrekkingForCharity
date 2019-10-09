@@ -1,10 +1,26 @@
 {
     "version": "2.0.0",
     "tasks": [
-       {
-        "label": "Launch Dockerized App",
-        "command": "docker run --rm -it -p 54352:80 -v ${workspaceFolder}:/app/ -w /app/source/TrekkingForCharity.Web --name treks-debug -e ASPNETCORE_URLS=http://+:80 trekkingforcharity/aspcore-devbase:latest dotnet watch run -c Debug"        
-       },
+        {
+            "label": "Install NPM packages via docker",
+            "command": "docker run --rm -it -v ${workspaceFolder}:/app/ -w /app/source/TrekkingForCharity.Web --name treks-debug trekkingforcharity/aspcore-devbase:latest npm install",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Launch Dockerized App",
+            "command": "docker run --rm -it -p 54352:80 -v ${workspaceFolder}:/app/ -w /app/source/TrekkingForCharity.Web --name treks-debug trekkingforcharity/aspcore-devbase:latest dotnet watch run -c Debug --urls=http://+:80",
+            "type": "shell",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
         {
             "label": "watch test with coverage",
             "command": "${workspaceFolder}/Build/watch-tests.cmd",
@@ -14,6 +30,6 @@
                 "kind": "test",
                 "isDefault": true
             }
-        },       
+        }
     ]
 }

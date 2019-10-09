@@ -56,7 +56,8 @@ namespace TrekkingForCharity.Web.Infrastructure.Workers
         public override void Dispose()
         {
             base.Dispose();
-            if (this._process.HasExited == false)
+
+            if (this._process != null && this._process.HasExited == false)
             {
                 this._process.Kill();
             }
